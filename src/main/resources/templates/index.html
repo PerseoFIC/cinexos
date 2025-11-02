@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Cinexos</title>
+	<link rel="stylesheet" th:href="@{/css/cinexos.css}" />
+	<script th:src="@{/js/stats.js}"></script>
+	<script th:src="@{/js/cinexos.js}" defer></script>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+</head>
+<body>
+	<header class="top-bar">
+		<div class="iconos-izquierda">
+			<button id="nuevaPartidaIcon" title="Nueva partida" class="icono-barra">🔁</button>
+			<button id="ayudaIcon" title="Ayuda" class="icono-barra">❓</button>
+		</div>
+		<h1>🎬 Cinexos</h1>
+		<div class="iconos-derecha">
+			<img id="tmdbIcon"
+					src="https://www.themoviedb.org/assets/2/apple-touch-icon-57ed4b3b0450fd5e9a0c20f34e814b82adaa1085c79bdde2f00ca8787b63d2c4.png"
+					alt="TMDB"
+					title="Declaración de uso de TMDB"
+					class="icono-barra tmdb-icon">
+			<button id="statsIcon" title="Ver estadísticas" class="icono-barra">📊</button>
+		</div>
+	</header>
+
+	<div th:if="${mensaje != null}" class="mensaje">
+		<p th:text="${mensaje}"></p>
+	</div>
+
+	<div th:if="${reto != null}" class="reto-container">
+
+		<!-- Actor A -->
+		<div class="actor" th:attr="data-actor-a-id-tmdb=${reto.actorA.idTmdb},data-actor-a-id-bd=${reto.actorA.id}">
+			<img th:src="'https://image.tmdb.org/t/p/w185' + ${reto.actorA.rutaFoto}" alt="Actor A" />
+			<p class="actor-nombre" th:text="${reto.actorA.nombreCompleto}"></p>
+		</div>
+
+		<!-- Relación A–Película AC -->
+		<div class="relacion" id="relacionA-AC">↔️</div>
+
+		<!-- Película AC -->
+		<div class="pelicula input-wrapper"
+			th:attr="data-pelicula-id-tmdb=${reto.peliculaAC.idTmdb},
+					data-pelicula-ac-id-bd=${reto.peliculaAC.id},
+					data-pelicula-titulo=${reto.peliculaAC.titulo},
+					data-pelicula-poster=${reto.peliculaAC.rutaPoster}">
+			<div class="placeholder poster" id="peliculaACPlaceholder">🎞️</div>
+
+			<div class="input-zone">
+				<input type="text" id="peliculaACInput" placeholder="Título de la película..." autocomplete="off" />
+				<div id="peliculaACSugerencias" class="suggestions"></div>
+			</div>
+
+			<button class="pista-btn" id="pistaACBtn">🔍 Pista</button>
+		</div>
+
+		<!-- Relación Película AC–Actor C -->
+		<div class="relacion" id="relacionAC-C">↔️</div>
+
+		<!-- Actor C -->
+		<div class="actor input-wrapper"
+			th:attr="data-actor-id-tmdb=${reto.actorC.idTmdb},
+					data-actor-c-id-bd=${reto.actorC.id},
+					data-actor-nombre=${reto.actorC.nombreCompleto},
+					data-actor-foto=${reto.actorC.rutaFoto}">
+			<div class="placeholder actor" id="actorCPlaceholder">🕵️</div>
+
+			<div class="input-zone">
+				<input type="text" id="actorCInput" placeholder="Nombre del actor..." autocomplete="off" />
+				<div id="actorCSugerencias" class="suggestions"></div>
+			</div>
+		</div>
+
+		<!-- Relación Actor C–Película BC -->
+		<div class="relacion" id="relacionC-BC">↔️</div>
+
+		<!-- Película BC -->
+		<div class="pelicula input-wrapper"
+			th:attr="data-pelicula-id-tmdb=${reto.peliculaBC.idTmdb},
+					data-pelicula-bc-id-bd=${reto.peliculaBC.id},
+					data-pelicula-titulo=${reto.peliculaBC.titulo},
+					data-pelicula-poster=${reto.peliculaBC.rutaPoster}">
+			<div class="placeholder poster" id="peliculaBCPlaceholder">🎞️</div>
+
+			<div class="input-zone">
+				<input type="text" id="peliculaBCInput" placeholder="Título de la película..." autocomplete="off" />
+				<div id="peliculaBCSugerencias" class="suggestions"></div>
+			</div>
+
+			<button class="pista-btn" id="pistaBCBtn">🔍 Pista</button>
+		</div>
+
+		<!-- Relación Película BC–Actor B -->
+		<div class="relacion" id="relacionBC-B">↔️</div>
+
+		<!-- Actor B -->
+		<div class="actor" th:attr="data-actor-b-id-tmdb=${reto.actorB.idTmdb},data-actor-b-id-bd=${reto.actorB.id}">
+			<img th:src="'https://image.tmdb.org/t/p/w185' + ${reto.actorB.rutaFoto}" alt="Actor B" />
+			<p class="actor-nombre" th:text="${reto.actorB.nombreCompleto}"></p>
+		</div>
+	</div>
+
+	<!-- Botón Resolver -->
+	<div class="resolver-container">
+		<button id="resolverBtn">Resolver</button>
+	</div>
+
+	<!-- Cuadro de Resultados -->
+	<div id="resultadosContainer" class="resultados-container">
+		<table id="resultadosTable">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Película AC</th>
+					<th>Actor C</th>
+					<th>Película BC</th>
+					<th>Aciertos</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>1</td><td></td><td></td><td></td><td></td></tr>
+				<tr><td>2</td><td></td><td></td><td></td><td></td></tr>
+				<tr><td>3</td><td></td><td></td><td></td><td></td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div th:if="${reto == null}">
+		<p>No se ha podido generar un reto por ahora 😔</p>
+	</div>
+
+	<!-- Popup de Ayuda -->
+	<div id="ayudaPopup" class="popup-estadisticas" style="display:none;">
+		<div class="popup-contenido">
+			<span id="cerrarAyuda" class="cerrar-popup">&times;</span>
+			<h2>Ayuda</h2>
+			<p>
+				Bienvenido a <strong>Cinexos</strong> 🎬	<br/>
+				El objetivo del juego es conectar dos intérpretes encontrando el intérprete nexo que los une a través de las películas en las que han participado.<br/>
+				Comienza a escribir el nombre del intérprete o el título de la película y selecciónalos en el desplegable.<br/>
+				Tienes 3 intentos para encontrar los nexos (el intérprete que los relaciona y las películas -distintas- en común con uno y con otro).<br/>
+				Si no se te ocurre, puedes usar las pistas si lo necesitas.<br/>
+				¡Siempre puedes generar un nuevo reto y volver a intentarlo!<br/>
+				🔁 → Nueva partida<br/>
+				❓ → Ayuda<br/>
+				TMDB → Declaración de uso de TMDB<br/>
+				📊 → Estadísticas
+			</p>
+		</div>
+	</div>
+
+	<!-- Popup de Estadísticas -->
+	<div id="statsPopup" class="popup-estadisticas" style="display:none;">
+		<div class="popup-contenido">
+			<span id="cerrarStats" class="cerrar-popup">&times;</span>
+			<h2>Estadísticas</h2>
+			<p>Partidas jugadas: <span id="statPartidasJugadas">0</span></p>
+
+			<table class="tabla-estadisticas">
+				<tr><td>✅✅✅✅</td><td id="statVictoriaTotal">0</td></tr>
+				<tr><td>🔍✅✅✅</td><td id="statVictoriaUnaPista">0</td></tr>
+				<tr><td>🔍🔍✅✅</td><td id="statVictoriaDosPistas">0</td></tr>
+				<tr><td>❌</td><td id="statFracaso">0</td></tr>
+				<tr><td>－</td><td id="statAbandonadas">0</td></tr>
+			</table>
+		</div>
+	</div>
+
+	<!-- Popup de TMDB -->
+	<div id="tmdbPopup" class="popup-estadisticas" style="display:none;">
+		<div class="popup-contenido">
+			<span id="cerrarTmdb" class="cerrar-popup">&times;</span>
+			<h2>Declaración de uso de TMDB</h2>
+			<p>
+				Esta aplicación utiliza TMDB y las APIs de TMDB, pero no está respaldada,
+				certificada ni aprobada por TMDB.
+			</p>
+			<p style="margin-top: 1rem;">
+				<a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer"
+					style="color: #01b4e4; text-decoration: none; font-weight: bold;">
+					Visitar el sitio oficial de TMDB →
+				</a>
+			</p>
+			<img src="https://www.themoviedb.org/assets/2/apple-touch-icon-57ed4b3b0450fd5e9a0c20f34e814b82adaa1085c79bdde2f00ca8787b63d2c4.png"
+					alt="TMDB logo"
+					style="width:80px;height:80px;margin-top:10px;border-radius:16px;">
+		</div>
+	</div>
+</body>
+</html>

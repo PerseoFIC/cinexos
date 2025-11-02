@@ -1,0 +1,14 @@
+
+# Ignora la carpeta de contenido de la Base de datos
+ContenidoBD
+
+# Ignora las carpetas y ficheros internos del proyecto
+target
+src/main/webapp/META-INF/maven
+.settings
+.classpath
+.project
+.factorypath
+
+# Ignora los ficheros de anotaciones
+Notas.txt
